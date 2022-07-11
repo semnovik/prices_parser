@@ -48,7 +48,8 @@ func Respond(botUrl string, update Update) error {
 	case readFromString(messageFromChannel, "сквад"):
 		BotMessage.Text = "Внимание @Semanovik @AlexNicker @Andrey @Vyacheslov и Вован\nСегодня сквад в 22 МСК "
 	case readFromString(messageFromChannel, "сема"):
-		BotMessage.Text = "@Semanovik пидор на " + strconv.Itoa(rand.Intn(100)) + "%"
+		name := update.Message.Chat.FirstName
+		BotMessage.Text = "@Semanovik пидор на " + strconv.Itoa(rand.Intn(100)) + "%" + "\n" + name + " пидор на все 100%"
 	case readFromString(messageFromChannel, "леха"):
 		BotMessage.Text = "@AlexNicker пидор на " + strconv.Itoa(rand.Intn(100)) + "%"
 	case readFromString(messageFromChannel, "друля"):
@@ -57,7 +58,14 @@ func Respond(botUrl string, update Update) error {
 		BotMessage.Text = "@Vyacheslov пидор на " + strconv.Itoa(rand.Intn(100)) + "%"
 	case readFromString(messageFromChannel, "вован"):
 		BotMessage.Text = "@Gulyanda пидор по жизни"
+	case readFromString(messageFromChannel, "как меня зовут"):
+		name := update.Message.Chat.FirstName
+		BotMessage.Text = "Тебя зовут " + name
+	case readFromString(messageFromChannel, "на ком катать"):
+		heroToPlay := WhoToPlayFor()
+		BotMessage.Text = "Ты сегодня ебашишь на " + heroToPlay
 	}
+
 	buf, err := json.Marshal(BotMessage)
 	if err != nil {
 		return err

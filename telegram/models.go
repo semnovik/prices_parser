@@ -11,7 +11,8 @@ type Message struct {
 }
 
 type Chat struct {
-	ChatId int `json:"id"`
+	ChatId    int    `json:"id"`
+	FirstName string `json:"first_name"`
 }
 
 type RestResp struct {
