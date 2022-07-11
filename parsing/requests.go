@@ -60,3 +60,46 @@ func GetAliCurrency() string {
 	aliCurrencyMessage := "Текущий курс USD на Алиэкспресс: " + strings.TrimSpace(dollarAliTable)
 	return aliCurrencyMessage
 }
+
+func GetWeatherSosnogorsk() string {
+	response, err := http.Get("https://weather.rambler.ru/v-sosnogorske/")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	Body := response.Body
+
+	doc, err := goquery.NewDocumentFromReader(Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	table := doc.Find(".J8Tp")
+	where, _ := table.Children().Children().Children().Children().Html() // Погода в Сосногорске
+	when, _ := table.Children().Next().Children().Html()                 // День недели, дата
+	howIt, _ := doc.Find(".TWnE").Html()
+	degree, _ := doc.Find(".T8o8").Children().Children().Children().Children().Next().Html()
+
+	return where + ":" + "\n" + when + "\n" + "\n" + howIt + "\n" + "Температура: " + strings.ReplaceAll(degree, "<!-- -->", "")
+}
+func GetWeatherKaliningrad() string {
+	response, err := http.Get("https://weather.rambler.ru/v-kaliningrade/")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	Body := response.Body
+
+	doc, err := goquery.NewDocumentFromReader(Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	table := doc.Find(".J8Tp")
+	where, _ := table.Children().Children().Children().Children().Html() // Погода в Сосногорске
+	when, _ := table.Children().Next().Children().Html()                 // День недели, дата
+	howIt, _ := doc.Find(".TWnE").Html()
+	degree, _ := doc.Find(".T8o8").Children().Children().Children().Children().Next().Html()
+
+	return where + ":" + "\n" + when + "\n" + "\n" + howIt + "\n" + "Температура: " + strings.ReplaceAll(degree, "<!-- -->", "")
+}

@@ -64,6 +64,10 @@ func Respond(botUrl string, update Update) error {
 			name = update.Message.FromObj.FirstName
 		}
 		BotMessage.Text = "Тебя зовут " + name
+	case readFromString(messageFromChannel, "сосногорск"):
+		BotMessage.Text = parsing.GetWeatherSosnogorsk()
+	case readFromString(messageFromChannel, "калининград"):
+		BotMessage.Text = parsing.GetWeatherKaliningrad()
 	case readFromString(messageFromChannel, "на ком катать"):
 		heroToPlay := WhoToPlayFor()
 		BotMessage.Text = "Ты сегодня ебашишь на " + heroToPlay
