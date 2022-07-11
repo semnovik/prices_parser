@@ -24,6 +24,6 @@ func GetPrices() string {
 	dollarCurrency, _ := dollarTable.Children().Html()
 	buyDollar, _ := dollarTable.Children().Next().Html()
 	sellDollar, _ := dollarTable.Children().Next().Next().Html()
-	text := strings.TrimSpace(dollarCurrency) + " \nBuy: " + strings.TrimSpace(buyDollar) + " \nSell: " + strings.TrimSpace(sellDollar) + "\nSlava pidor"
+	text := strings.TrimSpace(dollarCurrency) + " \nВчера: " + strings.TrimSpace(buyDollar) + " \nСегодня: " + strings.TrimSpace(sellDollar) + "\nСозываю дота сквад сегодня в 22 по мск"
 	return text
 }

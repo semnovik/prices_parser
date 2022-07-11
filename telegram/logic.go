@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
 	"strconv"
+	"time"
 
 	"awesomeProject/prices"
 )
@@ -34,7 +36,31 @@ func GetUpdates(url string, offset int) ([]Update, error) {
 func Respond(botUrl string, update Update) error {
 	var BotMessage BotMessage
 	BotMessage.ChatId = update.Message.Chat.ChatId
-	BotMessage.Text = prices.GetPrices()
+	rand.Seed(time.Now().Unix())
+	if update.Message.Text == "/Доллар" {
+		BotMessage.Text = prices.GetPrices()
+	}
+	if update.Message.Text == "/Кто пидор?" {
+		BotMessage.Text = "Сегодня пидор Друля"
+	}
+	if update.Message.Text == "/Сквад" {
+		BotMessage.Text = "Внимание @Semanovik @AlexNicker @Andrey @Vyacheslov и Вован\nСегодня сквад в 22 МСК "
+	}
+	if update.Message.Text == "/Сема" {
+		BotMessage.Text = "@Semanovik пидор на " + strconv.Itoa(rand.Intn(100)) + "%"
+	}
+	if update.Message.Text == "/Леха" {
+		BotMessage.Text = "@AlexNicker пидор на " + strconv.Itoa(rand.Intn(100)) + "%"
+	}
+	if update.Message.Text == "/Друля" {
+		BotMessage.Text = "@Andrey пидор на " + strconv.Itoa(rand.Intn(100)) + "%"
+	}
+	if update.Message.Text == "/Слава" {
+		BotMessage.Text = "@Vyacheslov пидор на " + strconv.Itoa(rand.Intn(100)) + "%"
+	}
+	if update.Message.Text == "/Вован" {
+		BotMessage.Text = "@Вован пидор по жизни"
+	}
 	buf, err := json.Marshal(BotMessage)
 	if err != nil {
 		return err
