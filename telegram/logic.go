@@ -14,6 +14,8 @@ import (
 	"awesomeProject/prices"
 )
 
+var counter = 0
+
 func GetUpdates(url string, offset int) ([]Update, error) {
 	resp, err := http.Get(url + "/getUpdates" + "?offset=" + strconv.Itoa(offset))
 	if err != nil {
@@ -36,30 +38,25 @@ func GetUpdates(url string, offset int) ([]Update, error) {
 func Respond(botUrl string, update Update) error {
 	var BotMessage BotMessage
 	BotMessage.ChatId = update.Message.Chat.ChatId
+	messageFromChannel := update.Message.Text
 	rand.Seed(time.Now().Unix())
-	if update.Message.Text == "/Доллар" {
-		BotMessage.Text = prices.GetPrices()
-	}
-	if update.Message.Text == "/Кто пидор?" {
+	switch {
+	case readFromString(messageFromChannel, "доллар"):
+		BotMessage.Text = prices.GetPrices() + "\n" + prices.GetCurrentCurrencyUSD() + "\n" + prices.GetAliCurrency()
+	case readFromString(messageFromChannel, "кто пидор"):
 		BotMessage.Text = "Сегодня пидор Друля"
-	}
-	if update.Message.Text == "/Сквад" {
+	case readFromString(messageFromChannel, "сквад"):
 		BotMessage.Text = "Внимание @Semanovik @AlexNicker @Andrey @Vyacheslov и Вован\nСегодня сквад в 22 МСК "
-	}
-	if update.Message.Text == "/Сема" {
+	case readFromString(messageFromChannel, "сема"):
 		BotMessage.Text = "@Semanovik пидор на " + strconv.Itoa(rand.Intn(100)) + "%"
-	}
-	if update.Message.Text == "/Леха" {
+	case readFromString(messageFromChannel, "леха"):
 		BotMessage.Text = "@AlexNicker пидор на " + strconv.Itoa(rand.Intn(100)) + "%"
-	}
-	if update.Message.Text == "/Друля" {
+	case readFromString(messageFromChannel, "друля"):
 		BotMessage.Text = "@Andrey пидор на " + strconv.Itoa(rand.Intn(100)) + "%"
-	}
-	if update.Message.Text == "/Слава" {
+	case readFromString(messageFromChannel, "слава"):
 		BotMessage.Text = "@Vyacheslov пидор на " + strconv.Itoa(rand.Intn(100)) + "%"
-	}
-	if update.Message.Text == "/Вован" {
-		BotMessage.Text = "@Вован пидор по жизни"
+	case readFromString(messageFromChannel, "вован"):
+		BotMessage.Text = "@Gulyanda пидор по жизни"
 	}
 	buf, err := json.Marshal(BotMessage)
 	if err != nil {
