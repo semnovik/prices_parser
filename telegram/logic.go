@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"time"
 
-	"awesomeProject/prices"
+	"awesomeProject/parsing"
 )
 
 var counter = 0
@@ -42,7 +42,7 @@ func Respond(botUrl string, update Update) error {
 	rand.Seed(time.Now().Unix())
 	switch {
 	case readFromString(messageFromChannel, "доллар"):
-		BotMessage.Text = prices.GetPrices() + "\n" + prices.GetCurrentCurrencyUSD() + "\n" + prices.GetAliCurrency()
+		BotMessage.Text = parsing.GetPrices() + "\n" + parsing.GetCurrentCurrencyUSD() + "\n" + parsing.GetAliCurrency()
 	case readFromString(messageFromChannel, "кто пидор"):
 		BotMessage.Text = "Сегодня пидор Друля"
 	case readFromString(messageFromChannel, "сквад"):
@@ -59,7 +59,10 @@ func Respond(botUrl string, update Update) error {
 	case readFromString(messageFromChannel, "вован"):
 		BotMessage.Text = "@Gulyanda пидор по жизни"
 	case readFromString(messageFromChannel, "как меня зовут"):
-		name := update.Message.Chat.FirstName
+		name := ""
+		if name = update.Message.Chat.FirstName; len(name) < 1 {
+			name = update.Message.FromObj.FirstName
+		}
 		BotMessage.Text = "Тебя зовут " + name
 	case readFromString(messageFromChannel, "на ком катать"):
 		heroToPlay := WhoToPlayFor()

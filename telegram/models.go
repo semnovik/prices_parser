@@ -6,8 +6,9 @@ type Update struct {
 }
 
 type Message struct {
-	Chat Chat   `json:"chat"`
-	Text string `json:"text"`
+	Chat    Chat   `json:"chat"`
+	Text    string `json:"text"`
+	FromObj From   `json:"from"`
 }
 
 type Chat struct {
@@ -22,4 +23,8 @@ type RestResp struct {
 type BotMessage struct {
 	ChatId int    `json:"chat_id"`
 	Text   string `json:"text"`
+}
+
+type From struct {
+	FirstName string `json:"first_name"`
 }
