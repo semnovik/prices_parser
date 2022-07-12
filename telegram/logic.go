@@ -48,7 +48,7 @@ func Respond(botUrl string, update Update) error {
 	case readFromString(messageFromChannel, "сквад"):
 		BotMessage.Text = "Внимание @Semanovik @AlexNicker @Andrey @Vyacheslov и Вован\nСегодня сквад в 22 МСК "
 	case readFromString(messageFromChannel, "сема"):
-		name := update.Message.Chat.FirstName
+		name := update.Message.FromObj.FirstName
 		BotMessage.Text = "@Semanovik пидор на " + strconv.Itoa(rand.Intn(100)) + "%" + "\n" + name + " пидор на все 100%"
 	case readFromString(messageFromChannel, "леха"):
 		BotMessage.Text = "@AlexNicker пидор на " + strconv.Itoa(rand.Intn(100)) + "%"
