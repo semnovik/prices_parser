@@ -29,19 +29,33 @@ func GetPrices() string {
 }
 
 func GetCurrentCurrencyUSD() string {
-	response, err := http.Get("https://quote.rbc.ru/ticker/59111")
+	responseDollar, err := http.Get("https://quote.rbc.ru/ticker/59111")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	Body := response.Body
+	BodyDollar := responseDollar.Body
 
-	doc, err := goquery.NewDocumentFromReader(Body)
+	docDollar, err := goquery.NewDocumentFromReader(BodyDollar)
 	if err != nil {
 		log.Fatal(err)
 	}
-	currentDollarPrice := doc.Find(".chart__info__sum").Text()
-	return "Текущий курс доллара: " + strings.TrimSpace(currentDollarPrice)
+	currentDollarPrice := docDollar.Find(".chart__info__sum").Text()
+
+	responseEuro, err := http.Get("https://quote.rbc.ru/ticker/59090")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	BodyEuro := responseEuro.Body
+
+	docEuro, err := goquery.NewDocumentFromReader(BodyEuro)
+	if err != nil {
+		log.Fatal(err)
+	}
+	euroPrice := docEuro.Find(".chart__info__sum").Text()
+
+	return "Текущий курс доллара: " + strings.TrimSpace(currentDollarPrice) + "\n" + "Текущий курс евро: " + strings.TrimSpace(euroPrice)
 }
 
 func GetAliCurrency() string {

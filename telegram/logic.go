@@ -41,8 +41,8 @@ func Respond(botUrl string, update Update) error {
 	messageFromChannel := update.Message.Text
 	rand.Seed(time.Now().Unix())
 	switch {
-	case readFromString(messageFromChannel, "доллар"):
-		BotMessage.Text = parsing.GetPrices() + "\n" + parsing.GetCurrentCurrencyUSD() + "\n" + parsing.GetAliCurrency()
+	case readFromString(messageFromChannel, "курс"):
+		BotMessage.Text = parsing.GetCurrentCurrencyUSD() + "\n" + parsing.GetAliCurrency()
 	case readFromString(messageFromChannel, "кто пидор"):
 		BotMessage.Text = "Сегодня пидор Друля"
 	case readFromString(messageFromChannel, "сквад"):
