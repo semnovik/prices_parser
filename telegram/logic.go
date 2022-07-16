@@ -6,15 +6,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"math/rand"
 	"net/http"
 	"strconv"
-	"time"
-
-	"awesomeProject/parsing"
 )
-
-var counter = 0
 
 func GetUpdates(url string, offset int) ([]Update, error) {
 	resp, err := http.Get(url + "/getUpdates" + "?offset=" + strconv.Itoa(offset))
@@ -39,39 +33,10 @@ func Respond(botUrl string, update Update) error {
 	var BotMessage BotMessage
 	BotMessage.ChatId = update.Message.Chat.ChatId
 	messageFromChannel := update.Message.Text
-	rand.Seed(time.Now().Unix())
-	switch {
-	case readFromString(messageFromChannel, "курс"):
-		BotMessage.Text = parsing.GetCurrentCurrencyUSD() + "\n" + parsing.GetAliCurrency()
-	case readFromString(messageFromChannel, "кто пидор"):
-		BotMessage.Text = "Сегодня пидор Друля"
-	case readFromString(messageFromChannel, "сквад"):
-		BotMessage.Text = "Внимание @Semanovik @AlexNicker @Andrey @Vyacheslov и Вован\nСегодня сквад в 22 МСК "
-	case readFromString(messageFromChannel, "сема"):
-		name := update.Message.FromObj.FirstName
-		BotMessage.Text = "@Semanovik пидор на " + strconv.Itoa(rand.Intn(100)) + "%" + "\n" + name + " пидор на все 100%"
-	case readFromString(messageFromChannel, "леха"):
-		BotMessage.Text = "@AlexNicker пидор на " + strconv.Itoa(rand.Intn(100)) + "%"
-	case readFromString(messageFromChannel, "друля"):
-		BotMessage.Text = "@Andrey пидор на " + strconv.Itoa(rand.Intn(100)) + "%"
-	case readFromString(messageFromChannel, "слава"):
-		BotMessage.Text = "@Vyacheslov пидор на " + strconv.Itoa(rand.Intn(100)) + "%"
-	case readFromString(messageFromChannel, "вован"):
-		BotMessage.Text = "@Gulyanda пидор по жизни"
-	case readFromString(messageFromChannel, "как меня зовут"):
-		name := ""
-		if name = update.Message.Chat.FirstName; len(name) < 1 {
-			name = update.Message.FromObj.FirstName
-		}
-		BotMessage.Text = "Тебя зовут " + name
-	case readFromString(messageFromChannel, "сосногорск"):
-		BotMessage.Text = parsing.GetWeatherSosnogorsk()
-	case readFromString(messageFromChannel, "калининград"):
-		BotMessage.Text = parsing.GetWeatherKaliningrad()
-	case readFromString(messageFromChannel, "на ком катать"):
-		heroToPlay := WhoToPlayFor()
-		BotMessage.Text = "Ты сегодня ебашишь на " + heroToPlay
-	}
+	nameFromChat := update.Message.Chat.FirstName
+	nameFromChannel := update.Message.FromObj.FirstName
+
+	BotMessage.Text = ChoseAnswer(messageFromChannel, nameFromChat, nameFromChannel)
 
 	buf, err := json.Marshal(BotMessage)
 	if err != nil {
