@@ -7,8 +7,11 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 )
+
+var BotUrl, _ = os.ReadFile("url")
 
 func GetUpdates(url string, offset int) ([]Update, error) {
 	resp, err := http.Get(url + "/getUpdates" + "?offset=" + strconv.Itoa(offset))
@@ -29,40 +32,41 @@ func GetUpdates(url string, offset int) ([]Update, error) {
 	return restResp.Result, nil
 }
 
-func Respond(botUrl string, update Update) error {
+func Respond(update Update) {
 	var BotMessage BotMessage
 	BotMessage.ChatId = update.Message.Chat.ChatId
 	messageFromChannel := update.Message.Text
+
 	nameFromChat := update.Message.Chat.FirstName
 	nameFromChannel := update.Message.FromObj.FirstName
 
 	BotMessage.Text = ChoseAnswer(messageFromChannel, nameFromChat, nameFromChannel)
 
-	buf, err := json.Marshal(BotMessage)
-	if err != nil {
-		return err
-	}
-	_, err = http.Post(botUrl+"/sendMessage", "application/json", bytes.NewBuffer(buf))
-	if err != nil {
-		return err
-	}
-	return nil
+	SendMessage(BotMessage)
 }
 
 func Setup() {
-	botToken := "5418352036:AAEl4mn0Q91dkms3L-73B3WTlgTcwkzz3mc"
-	botApi := "https://api.telegram.org/bot"
-	botUrl := botApi + botToken
 	offset := 0
 	for {
-		updates, err := GetUpdates(botUrl, offset)
+		updates, err := GetUpdates(string(BotUrl), offset)
 		if err != nil {
 			log.Println("Something went wrong: ", err)
 		}
 		for _, update := range updates {
-			err = Respond(botUrl, update)
+			Respond(update)
 			offset = update.UpdateId + 1
 		}
 		fmt.Println(updates)
+	}
+}
+
+func SendMessage(BotMessage BotMessage) {
+	buf, err := json.Marshal(BotMessage)
+	if err != nil {
+		log.Println("Something went wrong")
+	}
+	_, err = http.Post(string(BotUrl)+"/sendMessage", "application/json", bytes.NewBuffer(buf))
+	if err != nil {
+		log.Println("Something went wrong during sending message")
 	}
 }

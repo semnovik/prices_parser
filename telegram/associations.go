@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"awesomeProject/parsing"
+	"awesomeProject/telegram/answers"
 	"math/rand"
 	"strconv"
 	"time"
@@ -23,24 +24,25 @@ func WhoToPlayFor() string {
 }
 
 func ChoseAnswer(message string, nameFromChat string, nameFromChannel string) string {
-	rand.Seed(time.Now().Unix())
 	response := ""
 	switch {
+	case readFromString(message, "дота в "):
+		SetTimeForDota(message)
 	case readFromString(message, "курс"):
 		response = parsing.GetCurrentCurrencyUSD() + "\n" + parsing.GetAliCurrency()
 	case readFromString(message, "кто пидор"):
 		response = "Сегодня пидор Друля"
 	case readFromString(message, "сквад"):
-		response = "Внимание @Semanovik @AlexNicker @Andrey @Vyacheslov и Вован\nСегодня сквад в 22 МСК "
+		response = RoarForSquad()
 	case readFromString(message, "сема"):
 		name := nameFromChannel
-		response = "@Semanovik пидор на " + strconv.Itoa(rand.Intn(100)) + "%" + "\n" + name + " пидор на все 100%"
+		response = "@Semanovik пидор на " + GetChance() + "\n" + name + " пидор на все 100%"
 	case readFromString(message, "леха"):
-		response = "@AlexNicker пидор на " + strconv.Itoa(rand.Intn(100)) + "%"
+		response = "@AlexNicker пидор на " + GetChance()
 	case readFromString(message, "друля"):
-		response = "@Andrey пидор на " + strconv.Itoa(rand.Intn(100)) + "%"
+		response = "@Andrey пидор на " + GetChance()
 	case readFromString(message, "слава"):
-		response = "@Vyacheslov пидор на " + strconv.Itoa(rand.Intn(100)) + "%"
+		response = "@Vyacheslov пидор на " + GetChance()
 	case readFromString(message, "вован"):
 		response = "@Gulyanda пидор по жизни"
 	case readFromString(message, "как меня зовут"):
@@ -48,14 +50,18 @@ func ChoseAnswer(message string, nameFromChat string, nameFromChannel string) st
 		if name = nameFromChat; len(name) < 1 {
 			name = nameFromChannel
 		}
-		response = "Тебя зовут " + name
+		response = answers.YourNameIsText + name
 	case readFromString(message, "сосногорск"):
 		response = parsing.GetWeatherSosnogorsk()
 	case readFromString(message, "калининград"):
 		response = parsing.GetWeatherKaliningrad()
 	case readFromString(message, "на ком катать"):
 		heroToPlay := WhoToPlayFor()
-		response = "Ты сегодня ебашишь на " + heroToPlay
+		response = answers.TodayYouPlayAtText + heroToPlay
+
+	case readFromString(message, "бот помощь"):
+		response = answers.WhatCanIDoText
+
 	}
 	return response
 }
